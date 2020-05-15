@@ -30,6 +30,7 @@ Coming Soon
 - Re-Apply Skin Modifier and Add All Existing Bones
 - Quick: Skin Computation using Voxel and Heatmap
 - Quick: Change Vertices' Weights
+- Mirror Vertices Weights From Right Side To Left Side
 - Load Two Different Skin Checker Animation
 
 #### Animation
