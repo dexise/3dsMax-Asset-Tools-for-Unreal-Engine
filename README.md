@@ -1,5 +1,6 @@
-# 3dsMax-Asset-Tools-for-Unreal-Engine
+# 3dsMax Asset Tools for Unreal Engine
 
+# Preview Image:
 ![Preview](doc/assets/2020-05-15_11-18-23.png)
 
 # Installation:
