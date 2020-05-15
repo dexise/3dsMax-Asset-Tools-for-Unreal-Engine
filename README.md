@@ -2,6 +2,16 @@
 
 ![Preview](doc/assets/2020-05-15_11-18-23.png)
 
+# Installation:
+Download and Run `script.ms` using 3dsMax ( Script Menu )
+
+# Compatible Versions:
+Tested On 3dsMax 2018, 2019, 2020, 2021
+
+# Video Tutorial
+Coming Soon
+
+# Features:
 ### Hide and Freeze:
 - Quick: Hide/Unhide, Freeze/UnFreeze, See Through/Solid,
 - Quick: Hide Left Bones, Center Bones, Right Bones, Unhide All
