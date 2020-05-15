@@ -4,7 +4,8 @@
 ![Preview](doc/assets/2020-05-15_11-18-23.png)
 
 # Installation
-Download and Run `script.ms` using 3dsMax ( Script Menu )
+1- Download Zip File and Extract It
+2- Run `script.ms` using 3dsMax ( Scripting Menu > Run Script )
 
 # Compatible Versions
 Tested On 3dsMax 2018, 2019, 2020, 2021
