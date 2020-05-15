@@ -1,30 +1,30 @@
-# 3dsMax Asset Tools for Unreal Engine
+## 3dsMax Asset Tools for Unreal Engine
 
-# Preview Image
+## Preview Image
 ![Preview](doc/assets/2020-05-15_11-18-23.png)
 
-# Installation
+## Installation
 - Download Zip File and Extract It
 - Run `script.ms` using 3dsMax ( Scripting Menu > Run Script )
 
-# Compatible Versions
+## Compatible Versions
 Tested On 3dsMax 2018, 2019, 2020, 2021
 
-# Video Tutorial
+## Video Tutorial
 Coming Soon
 
-# Features
-### Hide and Freeze
+## Features
+#### Hide and Freeze
 - Quick: Hide/Unhide, Freeze/UnFreeze, See Through/Solid,
 - Quick: Hide Left Bones, Center Bones, Right Bones, Unhide All
 
-### Biped and Pose
+#### Biped and Pose
 - Make Mixamo Compatible Biped
 - Change Biped Pose to Base, A-Pose, T-Pose
 - Copy Right Bones To Left Bones
 - Change Bones Naming to UE4, Biped, Mixamo
 
-### Model and Skin
+#### Model and Skin
 - Clean Model ( Remove Bones and Skins > Convert To Editable Poly > Weld Vertices> > Quadrify )
 - Show Hip Position Plane for Accurate Rigging
 - Re-Apply Skin Modifier and Add All Existing Bones
@@ -32,12 +32,12 @@ Coming Soon
 - Quick: Change Vertices' Weights
 - Load Two Different Skin Checker Animation
 
-### Animation
+#### Animation
 - Create Root Motion Node for Animations
 - Restore Original Animation
 - Quick: Delete All Animation Keys
 
-### Import and Export
+#### Import and Export
 - Incremental Save
 - Change Export Path
 - Export Using Prefix
@@ -47,6 +47,6 @@ Coming Soon
 - Delete Created Sockets
 - Export Skeletal Mesh Excluding Attached Meshes
 
-### About
+#### About
 - Reload The Script ( For Developing Purposes )
 - Show/Hide Overlayed Text Info on Viewport
