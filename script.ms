@@ -437,18 +437,7 @@ fn getRenameMap = (
 )
 
 
-fn showInfo = (
-	gw.setTransform(Matrix3 1)
-
-	if ($Bip != undefined) do (
-		if ($Bip.controller.figureMode) then (
-			gw.hText [10,20,0] "Figure Mode Is On" color:red
-		) else (
-			gw.hText [10,20,0] "Figure Mode Is Off" color:green
-		)
-	)
-	time = localTime as string
-
+fn showSelectionInformation = (
 	if (selection.count > 0) then (
 		if (selection.count == 1) then (
 			class = (classOf $) as string
@@ -466,8 +455,21 @@ fn showInfo = (
 			gw.hText [150,5,0] ((selection.count as string) + " objects selected") color:white
 		)
 	)
+)
 
-	gw.hText [10,5,0] time color:white
+
+fn showInfo = (
+	gw.setTransform(Matrix3 1)
+
+	if ($Bip != undefined) do (
+		if ($Bip.controller.figureMode) then (
+			gw.hText [10,5,0] "Figure Mode Is On" color:Yellow
+		) else (
+			gw.hText [10,5,0] "Figure Mode Is Off" color:green
+		)
+	)
+	
+	--showSelectionInformation()
 
 	gw.enlargeUpdateRect #whole
 	gw.updateScreen()
@@ -508,6 +510,9 @@ fn removeSkin obj = (
 fn skinIt = (
 	deleteAllAnimation()
 	sliderTime = 0f
+	if (selection.count != 1) then (
+		return 0
+	)
 	removeSkin $
 	theSkin = Skin()
 	max modify mode
@@ -1274,9 +1279,11 @@ fn getMiddleBones = (
 
 
 fn containsModifier obj modifier = (
-	for index = obj.modifiers.count to 1 by -1 do (
-		if ((classOf obj.modifiers[index]) == modifier) do (
-			return true
+	if (obj.modifiers != undefined) then (
+		for index = obj.modifiers.count to 1 by -1 do (
+			if ((classOf obj.modifiers[index]) == modifier) do (
+				return true
+			)
 		)
 	)
 
@@ -1285,9 +1292,11 @@ fn containsModifier obj modifier = (
 
 
 fn removeModifier obj modifier = (
-	for index = obj.modifiers.count to 1 by -1 do (
-		if ((classOf obj.modifiers[index]) == modifier) do (
-			deleteModifier obj index
+	if (obj.modifiers != undefined) then (
+		for index = obj.modifiers.count to 1 by -1 do (
+			if ((classOf obj.modifiers[index]) == modifier) do (
+				deleteModifier obj index
+			)
 		)
 	)
 )
