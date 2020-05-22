@@ -1213,7 +1213,7 @@ fn makeUi = (
 
 
 	if (ui == undefined or ui.visible == false) then (
-		ui = newRolloutFloater "Dexise Tools" 240 1000 2195 750
+		ui = newRolloutFloater "Dexise Tools" 240 300 2195 750
 		cui.RegisterDialogBar ui minSize:1 maxSize:-1 style:#(#cui_dock_left, #cui_dock_vert, #cui_floatable, #cui_max_sized)
 	)
 
