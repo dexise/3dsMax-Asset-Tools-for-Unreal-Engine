@@ -698,6 +698,92 @@ fn restore_anim = (
 )
 
 
+
+fn getLeftBones = (
+	return for i in objects where (
+		classOf i == Biped_Object and (
+			strhas (i.name as string) "Left" or
+			strhas (i.name as string) " L " or
+			strhas (i.name as string) "_L" or
+			strhas (i.name as string) " LUp" or
+			strhas (i.name as string) " LT"
+		)
+	) collect i
+)
+
+
+fn getRightBones = (
+	return for i in objects where (
+		classOf i == Biped_Object and (
+			strhas (i.name as string) "Right" or
+			strhas (i.name as string) " R " or
+			strhas (i.name as string) "_R" or
+			strhas (i.name as string) " RUp" or
+			strhas (i.name as string) " RT"
+		)
+	) collect i
+)
+
+
+fn getMiddleBones = (
+	return for i in objects where (
+		classOf i == Biped_Object and ( not (
+			strhas (i.name as string) "Left" or
+			strhas (i.name as string) " L " or
+			strhas (i.name as string) "_L" or
+			strhas (i.name as string) " LUp" or
+			strhas (i.name as string) " LT" or
+			strhas (i.name as string) "Right" or
+			strhas (i.name as string) " R " or
+			strhas (i.name as string) "_R" or
+			strhas (i.name as string) " RUp" or
+			strhas (i.name as string) " RT"
+		))
+	) collect i
+)
+
+
+fn containsModifier obj modifier = (
+	if (obj.modifiers != undefined) then (
+		for index = obj.modifiers.count to 1 by -1 do (
+			if ((classOf obj.modifiers[index]) == modifier) do (
+				return true
+			)
+		)
+	)
+
+	return false
+)
+
+
+fn removeModifier obj modifier = (
+	if (obj.modifiers != undefined) then (
+		for index = obj.modifiers.count to 1 by -1 do (
+			if ((classOf obj.modifiers[index]) == modifier) do (
+				deleteModifier obj index
+			)
+		)
+	)
+)
+
+
+fn selectMultipleFiles title filters = (
+	theDialog = dotNetObject "System.Windows.Forms.OpenFileDialog"
+	theDialog.title = title
+	theDialog.Multiselect = true
+	theDialog.Filter = filters
+	theDialog.FilterIndex = 0
+	result = theDialog.showDialog()
+	if (result.Equals == result.Cancel) then (
+		print "canceled"
+		return #()
+	)
+
+	theFilenames = theDialog.fileNames
+	return theFilenames
+)
+
+
 fn makeUi = (
 	global ui
 	if (ui != undefined) then (
@@ -1233,91 +1319,6 @@ fn makeUi = (
 	for i in rollouts do (
 		addRollout i ui
 	)
-)
-
-
-fn getLeftBones = (
-	return for i in objects where (
-		classOf i == Biped_Object and (
-			strhas (i.name as string) "Left" or
-			strhas (i.name as string) " L " or
-			strhas (i.name as string) "_L" or
-			strhas (i.name as string) " LUp" or
-			strhas (i.name as string) " LT"
-		)
-	) collect i
-)
-
-
-fn getRightBones = (
-	return for i in objects where (
-		classOf i == Biped_Object and (
-			strhas (i.name as string) "Right" or
-			strhas (i.name as string) " R " or
-			strhas (i.name as string) "_R" or
-			strhas (i.name as string) " RUp" or
-			strhas (i.name as string) " RT"
-		)
-	) collect i
-)
-
-
-fn getMiddleBones = (
-	return for i in objects where (
-		classOf i == Biped_Object and ( not (
-			strhas (i.name as string) "Left" or
-			strhas (i.name as string) " L " or
-			strhas (i.name as string) "_L" or
-			strhas (i.name as string) " LUp" or
-			strhas (i.name as string) " LT" or
-			strhas (i.name as string) "Right" or
-			strhas (i.name as string) " R " or
-			strhas (i.name as string) "_R" or
-			strhas (i.name as string) " RUp" or
-			strhas (i.name as string) " RT"
-		))
-	) collect i
-)
-
-
-fn containsModifier obj modifier = (
-	if (obj.modifiers != undefined) then (
-		for index = obj.modifiers.count to 1 by -1 do (
-			if ((classOf obj.modifiers[index]) == modifier) do (
-				return true
-			)
-		)
-	)
-
-	return false
-)
-
-
-fn removeModifier obj modifier = (
-	if (obj.modifiers != undefined) then (
-		for index = obj.modifiers.count to 1 by -1 do (
-			if ((classOf obj.modifiers[index]) == modifier) do (
-				deleteModifier obj index
-			)
-		)
-	)
-)
-
-
-fn selectMultipleFiles title filters = (
-	theDialog = dotNetObject "System.Windows.Forms.OpenFileDialog"
-	theDialog.title = title
-	theDialog.Multiselect = true
-	theDialog.Filter = filters
-	theDialog.FilterIndex = 0
-	result = theDialog.showDialog()
-	if (result.Equals == result.Cancel) then (
-		print "canceled"
-		return #()
-	)
-
-	theFilenames = theDialog.fileNames
-	return theFilenames
 )
 
 (
