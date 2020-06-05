@@ -508,14 +508,16 @@ fn removeSkin obj = (
 
 
 fn skinIt = (
-	deleteAllAnimation()
+	--deleteAllAnimation()
 	sliderTime = 0f
 	if (selection.count != 1) then (
 		return 0
 	)
+	
 	removeSkin $
 	theSkin = Skin()
 	max modify mode
+	
 	addModifier $ theSkin
 	modPanel.setCurrentObject theSkin
 	skinOps.buttonInclude theSkin
@@ -1167,7 +1169,7 @@ fn makeUi = (
 
 			panel_model.clean_model.enabled = true
 
-			if ($ != undefined and isGeometry($) and containsModifier $ Skin and $Bip != undefined) then (
+			if ($ != undefined and isGeometry($) and (containsModifier $ Skin) and $Bip != undefined) then (
 				panel_model.compute_skin_fast.enabled = true
 				panel_model.compute_skin_slow.enabled = true
 				panel_model.skin_falloff.enabled = true
