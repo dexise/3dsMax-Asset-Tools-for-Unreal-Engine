@@ -1,13 +1,3 @@
-fn detectMeshName = (
-	return trimRight (getFilenameFile maxFileName) "1234567890"
-)
-
-
-fn isGeometry obj = (
-	return superClassOf obj == geometryClass and classOf obj != Biped_Object
-)
-
-
 fn get_script_path = (
 	return pathConfig.removePathLeaf (getSourceFileName()) as string
 )
@@ -15,6 +5,47 @@ fn get_script_path = (
 
 fn get_ini_path = (
 	return get_script_path() + "\\user-settings.ini"
+)
+
+
+fn getSetting key = (
+	return getINISetting (get_ini_path()) "Default" (key)
+)
+
+
+fn getPathAsset subdir = (
+	if (subdir == "" or subdir == undefined) then (
+		return getSetting "Path_Asset"
+	)
+
+	return ((getSetting "Path_Asset") + "\\" + subdir)
+)
+
+
+fn path_model_export = (
+	return getPathAsset "Model"
+)
+
+
+fn path_animation_export = (
+	return getPathAsset "Animation"
+)
+
+
+fn makeDirectories = (
+	path_asset = getSetting "Path_Asset"
+	makeDir (path_model_export()) all:true
+	makeDir (path_animation_export()) all:true
+)
+
+
+fn detectMeshName = (
+	return trimRight (getFilenameFile maxFileName) "1234567890_"
+)
+
+
+fn isGeometry obj = (
+	return superClassOf obj == geometryClass and classOf obj != Biped_Object
 )
 
 
@@ -35,37 +66,6 @@ fn setSetting key value = (
 	if (key == "Path_Asset") then (
 		makeDirectories()
 	)
-)
-
-
-fn getSetting key = (
-	return getINISetting (get_ini_path()) "Default" (key)
-)
-
-
-fn makeDirectories = (
-	path_asset = getSetting "Path_Asset"
-	makeDir (path_model_export()) all:true
-	makeDir (path_animation_export()) all:true
-)
-
-
-fn path_model_export = (
-	return getPathAsset "Dexise\\Export\\Model"
-)
-
-
-fn path_animation_export = (
-	return getPathAsset "Dexise\\Export\\Animation"
-)
-
-
-fn getPathAsset subdir = (
-	if (subdir == "" or subdir == undefined) then (
-		return getSetting "Path_Asset"
-	)
-
-	return ((getSetting "Path_Asset") + "\\" + subdir)
 )
 
 
@@ -126,6 +126,20 @@ fn deleteAllSockets = (
 )
 
 
+
+fn setExporterDefaultParams = (
+	FBXExporterSetParam "Cameras" false
+	FBXExporterSetParam "ASCII" false
+	FBXExporterSetParam "Animation" false
+	FBXExporterSetParam "SmoothingGroups" true
+	FBXExporterSetParam "SmoothMeshExport" true
+	FBXExporterSetParam "UseSceneName" true
+	FBXExporterSetParam "UpAxis" "Z"
+	FBXExporterSetParam "Skin" true
+	FBXExporterSetParam "Shape" true
+)
+
+
 fn export_skeletal_mesh = (
 	setExporterDefaultParams()
 
@@ -151,19 +165,6 @@ fn export_skeletal_mesh = (
 	if (removeAdditionalAssets) then (
 		max undo
 	)
-)
-
-
-fn setExporterDefaultParams = (
-	FBXExporterSetParam "Cameras" false
-	FBXExporterSetParam "ASCII" false
-	FBXExporterSetParam "Animation" false
-	FBXExporterSetParam "SmoothingGroups" true
-	FBXExporterSetParam "SmoothMeshExport" true
-	FBXExporterSetParam "UseSceneName" true
-	FBXExporterSetParam "UpAxis" "Z"
-	FBXExporterSetParam "Skin" true
-	FBXExporterSetParam "Shape" true
 )
 
 
@@ -229,6 +230,91 @@ fn deleteAllAnimation = (
 	maxOps.deleteSelectedAnimation()
 
 	select lastSelection
+)
+
+
+fn getRenameMap = (
+	arr = #()
+	struct data(bip, ue4, mixamo)
+
+	append arr (data "" 				"Bip" 						"Bip")
+	append arr (data " Pelvis" 			"Pelvis" 					"Hips")	
+	append arr (data " Footsteps" 		"Footsteps" 				"Footsteps")		
+	append arr (data " L Thigh" 		"Thigh_L" 					"LeftUpLeg")	
+	append arr (data " R Thigh" 		"Thigh_R" 					"RightUpLeg")	
+	append arr (data " L Calf" 			"Calf_L" 					"LeftLeg")	
+	append arr (data " R Calf" 			"Calf_R" 					"RightLeg")	
+	append arr (data " L Calf Twist"	"Calf_Twist_01_L" 			"LeftLegTwist1")			
+	append arr (data " R Calf Twist"	"Calf_Twist_01_R" 			"RightLegTwist1")			
+	append arr (data " L Foot"			"Foot_L" 					"LeftFoot")	
+	append arr (data " R Foot"			"Foot_R" 					"RightFoot")	
+	append arr (data " L Toe0" 			"Ball_L" 					"LeftToeBase")	
+	append arr (data " R Toe0" 			"Ball_R" 					"RightToeBase")	
+	append arr (data " L Toe0Nub" 		"Toe0Nub_L" 				"LeftFootToeBase_End")		
+	append arr (data " R Toe0Nub" 		"Toe0Nub_R" 				"RightFootToeBase_End")		
+	append arr (data " Spine" 			"Spine_01" 					"Spine")		
+	append arr (data " Spine1" 			"Spine_02" 					"Spine1")		
+	append arr (data " Spine2" 			"Spine_03" 					"Spine2")		
+	append arr (data " LThighTwist" 	"Thigh_Twist_01_L" 			"LeftUpLegTwist1")				
+	append arr (data " RThighTwist" 	"Thigh_Twist_01_R" 			"RightUpLegTwist1")				
+	append arr (data " L Clavicle" 		"Clavicle_L" 				"LeftShoulder")		
+	append arr (data " R Clavicle" 		"Clavicle_R" 				"RightShoulder")		
+	append arr (data " Neck" 			"Neck" 						"Neck")	
+	append arr (data " Neck1" 			"Neck_01" 					"Neck1")	
+	append arr (data " Head" 			"Head" 						"Head")	
+	append arr (data " HeadNub" 		"HeadNub" 					"HeadTop_End")	
+	append arr (data " L UpperArm" 		"UpperArm_L" 				"LeftArm")		
+	append arr (data " R UpperArm" 		"UpperArm_R" 				"RightArm")		
+	append arr (data " LUpArmTwist" 	"UpperArm_Twist_01_L" 		"LeftArmTwist1")				
+	append arr (data " RUpArmTwist" 	"UpperArm_Twist_01_R" 		"RightArmTwist1")				
+	append arr (data " L Forearm" 		"LowerArm_L" 				"LeftForeArm")		
+	append arr (data " R Forearm" 		"LowerArm_R" 				"RightForeArm")		
+	append arr (data " L Hand" 			"Hand_L" 					"LeftHand")	
+	append arr (data " R Hand" 			"Hand_R" 					"RightHand")	
+	append arr (data " L ForeTwist" 	"LowerArm_Twist_01_L" 		"LeftForeArmTwist1")				
+	append arr (data " R ForeTwist" 	"LowerArm_Twist_01_R" 		"RightForeArmTwist1")				
+	append arr (data " L Finger0" 		"Thumb_01_L" 				"LeftHandThumb1")		
+	append arr (data " L Finger01" 		"Thumb_02_L" 				"LeftHandThumb2")		
+	append arr (data " L Finger02" 		"Thumb_03_L" 				"LeftHandThumb3")		
+	append arr (data " L Finger0Nub" 	"ThumbNub_L" 				"LeftHandThumb4")		
+	append arr (data " R Finger0" 		"Thumb_01_R" 				"RightHandThumb1")		
+	append arr (data " R Finger01" 		"Thumb_02_R" 				"RightHandThumb2")		
+	append arr (data " R Finger02" 		"Thumb_03_R" 				"RightHandThumb3")		
+	append arr (data " R Finger0Nub" 	"ThumbNub_R" 				"RightHandThumb4")		
+	append arr (data " L Finger1" 		"Index_01_L" 				"LeftHandIndex1")		
+	append arr (data " L Finger11" 		"Index_02_L" 				"LeftHandIndex2")		
+	append arr (data " L Finger12" 		"Index_03_L" 				"LeftHandIndex3")		
+	append arr (data " L Finger1Nub" 	"IndexNub_L" 				"LeftHandIndex4")		
+	append arr (data " R Finger1"		"Index_01_R" 				"RightHandIndex1")		
+	append arr (data " R Finger11" 		"Index_02_R" 				"RightHandIndex2")		
+	append arr (data " R Finger12" 		"Index_03_R" 				"RightHandIndex3")		
+	append arr (data " R Finger1Nub" 	"IndexNub_R" 				"RightHandIndex4")		
+	append arr (data " L Finger2" 		"Middle_01_L" 				"LeftHandMiddle1")		
+	append arr (data " L Finger21" 		"Middle_02_L" 				"LeftHandMiddle2")		
+	append arr (data " L Finger22" 		"Middle_03_L" 				"LeftHandMiddle3")		
+	append arr (data " L Finger2Nub" 	"MiddleNub_L" 				"LeftHandMiddle4")		
+	append arr (data " R Finger2" 		"Middle_01_R" 				"RightHandMiddle1")		
+	append arr (data " R Finger21" 		"Middle_02_R" 				"RightHandMiddle2")		
+	append arr (data " R Finger22" 		"Middle_03_R" 				"RightHandMiddle3")		
+	append arr (data " R Finger2Nub" 	"MiddleNub_R" 				"RightHandMiddle4")		
+	append arr (data " L Finger3" 		"Ring_01_L" 				"LeftHandRing1")		
+	append arr (data " L Finger31" 		"Ring_02_L" 				"LeftHandRing2")		
+	append arr (data " L Finger32" 		"Ring_03_L" 				"LeftHandRing3")		
+	append arr (data " L Finger3Nub" 	"RingNub_L" 				"LeftHandRing4")		
+	append arr (data " R Finger3" 		"Ring_01_R" 				"RightHandRing1")		
+	append arr (data " R Finger31" 		"Ring_02_R" 				"RightHandRing2")		
+	append arr (data " R Finger32" 		"Ring_03_R" 				"RightHandRing3")		
+	append arr (data " R Finger3Nub" 	"RingNub_R" 				"RightHandRing4")		
+	append arr (data " L Finger4" 		"Pinky_01_L" 				"LeftHandPinky1")		
+	append arr (data " L Finger41" 		"Pinky_02_L" 				"LeftHandPinky2")		
+	append arr (data " L Finger42" 		"Pinky_03_L" 				"LeftHandPinky3")		
+	append arr (data " L Finger4Nub" 	"PinkyNub_L" 				"LeftHandPinky4")		
+	append arr (data " R Finger4" 		"Pinky_01_R" 				"RightHandPinky1")		
+	append arr (data " R Finger41" 		"Pinky_02_R" 				"RightHandPinky2")		
+	append arr (data " R Finger42" 		"Pinky_03_R" 				"RightHandPinky3")		
+	append arr (data " R Finger4Nub" 	"PinkyNub_R" 				"RightHandPinky4")		
+
+	return arr
 )
 
 
@@ -349,91 +435,6 @@ fn rename2biped = (
 		renameUE4toBiped()
 		return 0
 	)
-)
-
-
-fn getRenameMap = (
-	arr = #()
-	struct data(bip, ue4, mixamo)
-
-	append arr (data "" 				"Bip" 						"Bip")
-	append arr (data " Pelvis" 			"Pelvis" 					"Hips")	
-	append arr (data " Footsteps" 		"Footsteps" 				"Footsteps")		
-	append arr (data " L Thigh" 		"Thigh_L" 					"LeftUpLeg")	
-	append arr (data " R Thigh" 		"Thigh_R" 					"RightUpLeg")	
-	append arr (data " L Calf" 			"Calf_L" 					"LeftLeg")	
-	append arr (data " R Calf" 			"Calf_R" 					"RightLeg")	
-	append arr (data " L Calf Twist"	"Calf_Twist_01_L" 			"LeftLegTwist1")			
-	append arr (data " R Calf Twist"	"Calf_Twist_01_R" 			"RightLegTwist1")			
-	append arr (data " L Foot"			"Foot_L" 					"LeftFoot")	
-	append arr (data " R Foot"			"Foot_R" 					"RightFoot")	
-	append arr (data " L Toe0" 			"Ball_L" 					"LeftToeBase")	
-	append arr (data " R Toe0" 			"Ball_R" 					"RightToeBase")	
-	append arr (data " L Toe0Nub" 		"Toe0Nub_L" 				"LeftFootToeBase_End")		
-	append arr (data " R Toe0Nub" 		"Toe0Nub_R" 				"RightFootToeBase_End")		
-	append arr (data " Spine" 			"Spine_01" 					"Spine")		
-	append arr (data " Spine1" 			"Spine_02" 					"Spine1")		
-	append arr (data " Spine2" 			"Spine_03" 					"Spine2")		
-	append arr (data " LThighTwist" 	"Thigh_Twist_01_L" 			"LeftUpLegTwist1")				
-	append arr (data " RThighTwist" 	"Thigh_Twist_01_R" 			"RightUpLegTwist1")				
-	append arr (data " L Clavicle" 		"Clavicle_L" 				"LeftShoulder")		
-	append arr (data " R Clavicle" 		"Clavicle_R" 				"RightShoulder")		
-	append arr (data " Neck" 			"Neck" 						"Neck")	
-	append arr (data " Neck1" 			"Neck_01" 					"Neck1")	
-	append arr (data " Head" 			"Head" 						"Head")	
-	append arr (data " HeadNub" 		"HeadNub" 					"HeadTop_End")	
-	append arr (data " L UpperArm" 		"UpperArm_L" 				"LeftArm")		
-	append arr (data " R UpperArm" 		"UpperArm_R" 				"RightArm")		
-	append arr (data " LUpArmTwist" 	"UpperArm_Twist_01_L" 		"LeftArmTwist1")				
-	append arr (data " RUpArmTwist" 	"UpperArm_Twist_01_R" 		"RightArmTwist1")				
-	append arr (data " L Forearm" 		"LowerArm_L" 				"LeftForeArm")		
-	append arr (data " R Forearm" 		"LowerArm_R" 				"RightForeArm")		
-	append arr (data " L Hand" 			"Hand_L" 					"LeftHand")	
-	append arr (data " R Hand" 			"Hand_R" 					"RightHand")	
-	append arr (data " L ForeTwist" 	"LowerArm_Twist_01_L" 		"LeftForeArmTwist1")				
-	append arr (data " R ForeTwist" 	"LowerArm_Twist_01_R" 		"RightForeArmTwist1")				
-	append arr (data " L Finger0" 		"Thumb_01_L" 				"LeftHandThumb1")		
-	append arr (data " L Finger01" 		"Thumb_02_L" 				"LeftHandThumb2")		
-	append arr (data " L Finger02" 		"Thumb_03_L" 				"LeftHandThumb3")		
-	append arr (data " L Finger0Nub" 	"ThumbNub_L" 				"LeftHandThumb4")		
-	append arr (data " R Finger0" 		"Thumb_01_R" 				"RightHandThumb1")		
-	append arr (data " R Finger01" 		"Thumb_02_R" 				"RightHandThumb2")		
-	append arr (data " R Finger02" 		"Thumb_03_R" 				"RightHandThumb3")		
-	append arr (data " R Finger0Nub" 	"ThumbNub_R" 				"RightHandThumb4")		
-	append arr (data " L Finger1" 		"Index_01_L" 				"LeftHandIndex1")		
-	append arr (data " L Finger11" 		"Index_02_L" 				"LeftHandIndex2")		
-	append arr (data " L Finger12" 		"Index_03_L" 				"LeftHandIndex3")		
-	append arr (data " L Finger1Nub" 	"IndexNub_L" 				"LeftHandIndex4")		
-	append arr (data " R Finger1"		"Index_01_R" 				"RightHandIndex1")		
-	append arr (data " R Finger11" 		"Index_02_R" 				"RightHandIndex2")		
-	append arr (data " R Finger12" 		"Index_03_R" 				"RightHandIndex3")		
-	append arr (data " R Finger1Nub" 	"IndexNub_R" 				"RightHandIndex4")		
-	append arr (data " L Finger2" 		"Middle_01_L" 				"LeftHandMiddle1")		
-	append arr (data " L Finger21" 		"Middle_02_L" 				"LeftHandMiddle2")		
-	append arr (data " L Finger22" 		"Middle_03_L" 				"LeftHandMiddle3")		
-	append arr (data " L Finger2Nub" 	"MiddleNub_L" 				"LeftHandMiddle4")		
-	append arr (data " R Finger2" 		"Middle_01_R" 				"RightHandMiddle1")		
-	append arr (data " R Finger21" 		"Middle_02_R" 				"RightHandMiddle2")		
-	append arr (data " R Finger22" 		"Middle_03_R" 				"RightHandMiddle3")		
-	append arr (data " R Finger2Nub" 	"MiddleNub_R" 				"RightHandMiddle4")		
-	append arr (data " L Finger3" 		"Ring_01_L" 				"LeftHandRing1")		
-	append arr (data " L Finger31" 		"Ring_02_L" 				"LeftHandRing2")		
-	append arr (data " L Finger32" 		"Ring_03_L" 				"LeftHandRing3")		
-	append arr (data " L Finger3Nub" 	"RingNub_L" 				"LeftHandRing4")		
-	append arr (data " R Finger3" 		"Ring_01_R" 				"RightHandRing1")		
-	append arr (data " R Finger31" 		"Ring_02_R" 				"RightHandRing2")		
-	append arr (data " R Finger32" 		"Ring_03_R" 				"RightHandRing3")		
-	append arr (data " R Finger3Nub" 	"RingNub_R" 				"RightHandRing4")		
-	append arr (data " L Finger4" 		"Pinky_01_L" 				"LeftHandPinky1")		
-	append arr (data " L Finger41" 		"Pinky_02_L" 				"LeftHandPinky2")		
-	append arr (data " L Finger42" 		"Pinky_03_L" 				"LeftHandPinky3")		
-	append arr (data " L Finger4Nub" 	"PinkyNub_L" 				"LeftHandPinky4")		
-	append arr (data " R Finger4" 		"Pinky_01_R" 				"RightHandPinky1")		
-	append arr (data " R Finger41" 		"Pinky_02_R" 				"RightHandPinky2")		
-	append arr (data " R Finger42" 		"Pinky_03_R" 				"RightHandPinky3")		
-	append arr (data " R Finger4Nub" 	"PinkyNub_R" 				"RightHandPinky4")		
-
-	return arr
 )
 
 
